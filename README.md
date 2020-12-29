@@ -1,4 +1,5 @@
 # Kornr
 #### Developed by TomaSajt
-This mod is a hack for version 1.16.4
+Kornr is a mod for Minecraft Java Edition version 1.16.4
 
+> Open the kornr menu ingame with the multiply/star button
