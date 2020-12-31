@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.tomasajt.kornr.gui.KornrSettingsScreen;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -22,25 +24,25 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class Kornr {
 	public static final String MOD_ID = "kornr";
 	public static List<KeyBinding> keyBindings = new ArrayList<>();
-	public static KeyBinding keyBindingOpenKornrMenu = new KeyBinding("key.kornr.openMenu",
+	public static KeyBinding keyBindingOpenKornrSettings = new KeyBinding("key.kornr.openMenu",
 			KeyConflictContext.UNIVERSAL, InputMappings.Type.KEYSYM, GLFW.GLFW_KEY_KP_MULTIPLY, "key.categories.kornr");
 	static {
-		keyBindings.add(keyBindingOpenKornrMenu);
-	}
-	
-	public Kornr() {
-		Fullbright.instance.on();
+		keyBindings.add(keyBindingOpenKornrSettings);
 	}
 
-	public static void sendMessagge(Object message) {
+	public Kornr() {
+	}
+
+	public static void sendMessage(Object message) {
 		Minecraft mc = Minecraft.getInstance();
 		mc.ingameGUI.getChatGUI().printChatMessage(new StringTextComponent(message.toString()));
 	}
-	
+
 	@SubscribeEvent
 	public static void onClientSetupEvent(FMLClientSetupEvent event) {
 		for (KeyBinding keyBinding : keyBindings) {
 			ClientRegistry.registerKeyBinding(keyBinding);
 		}
+		KornrSettingsScreen.instance.loadSettings();
 	}
 }

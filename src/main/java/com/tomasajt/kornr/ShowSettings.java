@@ -13,7 +13,7 @@ public class ShowSettings {
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent event) {
-		if (Kornr.keyBindingOpenKornrMenu.isPressed()) {
+		if (Kornr.keyBindingOpenKornrSettings.isPressed()) {
 			mc.displayGuiScreen(KornrSettingsScreen.instance);
 		}
 	}

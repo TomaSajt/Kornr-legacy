@@ -1,15 +1,27 @@
 package com.tomasajt.kornr.gui;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
+import com.google.common.io.Files;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tomasajt.kornr.AutoJump;
 import com.tomasajt.kornr.AutoSprint;
 import com.tomasajt.kornr.BoundingBoxes;
 import com.tomasajt.kornr.Clicker;
 import com.tomasajt.kornr.Fullbright;
+import com.tomasajt.kornr.Kornr;
 import com.tomasajt.kornr.NamePlates;
 import com.tomasajt.kornr.Tracers;
 import com.tomasajt.kornr.gui.buttons.KornrButton;
@@ -19,6 +31,9 @@ import com.tomasajt.kornr.util.KornrHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -33,6 +48,8 @@ public class KornrSettingsScreen extends Screen {
 	public final int gridSizeY;
 	public static final int buttonWidth = 100;
 	public static final int buttonHeight = 20;
+	private File kornrDir = new File(mc.gameDir, "kornr");
+	private File optionsFile = new File(kornrDir, "settings.txt");
 
 	private KornrSettingsScreen() {
 		super(new StringTextComponent("Kornr Settings"));
@@ -56,14 +73,33 @@ public class KornrSettingsScreen extends Screen {
 
 	}
 
+	private void renderSaveSetupTooltip(Button button, MatrixStack matrixStack, int mouseX, int mouseY) {
+
+		this.renderTooltip(matrixStack,
+				this.minecraft.fontRenderer.trimStringToWidth(
+						new StringTextComponent("Save your current setup as the default setup"),
+						Math.max(this.width / 2 - 43, 170)),
+				mouseX, mouseY);
+
+	}
+
 	@Override
 	protected void init() {
 		for (KornrButton button : buttons) {
+			if (button instanceof ToggleableButton) {
+				((ToggleableButton) button).updateState();
+			}
 			setKornrButtonPositionMiddle(button, /**/
 					this.width / 2 - buttonWidth * (gridSizeX - 1) / 2 + buttonWidth * button.gridX(),
 					this.height / 2 - buttonHeight * (gridSizeY - 1) / 2 + buttonHeight * button.gridY());
 			this.addButton(button);
 		}
+		KornrButton saveButton = new KornrButton(1, 4, "Save setup", (button) -> this.saveSettings(),
+				this::renderSaveSetupTooltip);
+		setKornrButtonPositionMiddle(saveButton, /**/
+				this.width / 2, this.height / 2 - buttonHeight * (gridSizeY - 1) / 2 + buttonHeight * (gridSizeY + 1));
+		this.addButton(saveButton);
+
 	}
 
 	@Override
@@ -83,6 +119,18 @@ public class KornrSettingsScreen extends Screen {
 	}
 
 	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		InputMappings.Input mouseKey = InputMappings.getInputByCode(keyCode, scanCode);
+		if (super.keyPressed(keyCode, scanCode, modifiers)) {
+			return true;
+		}
+		if (Kornr.keyBindingOpenKornrSettings.isActiveAndMatches(mouseKey)) {
+			this.closeScreen();
+		}
+		return true;
+	}
+
+	@Override
 	public void onClose() {
 		ticks = 0;
 	}
@@ -95,5 +143,102 @@ public class KornrSettingsScreen extends Screen {
 	public static void setKornrButtonPositionMiddle(KornrButton button, int x, int y) {
 		button.x = x - buttonWidth / 2;
 		button.y = y - buttonHeight / 2;
+	}
+
+	public void saveSettings() {
+		try {
+			kornrDir.mkdir();
+			optionsFile.createNewFile();
+			try (PrintWriter printwriter = new PrintWriter(
+					new OutputStreamWriter(new FileOutputStream(optionsFile), StandardCharsets.UTF_8))) {
+				printwriter.println("tracers:" + Tracers.instance.isOn());
+				printwriter.println("boundingBoxes:" + BoundingBoxes.instance.isOn());
+				printwriter.println("namePlates:" + NamePlates.instance.isOn());
+				printwriter.println("autoSprint:" + AutoSprint.instance.isOn());
+				printwriter.println("autoJump:" + AutoJump.instance.isOn());
+				printwriter.println("fullbright:" + Fullbright.instance.isOn());
+				printwriter.println("clicker:" + Clicker.instance.isOn());
+			} catch (Exception exception) {
+				Kornr.sendMessage("Something went wrong with saving");
+			}
+		} catch (IOException e) {
+			Kornr.sendMessage("Something went wrong with creating the file");
+		}
+
+	}
+
+	public void loadSettings() {
+		try {
+			if (!this.optionsFile.exists()) {
+				return;
+			}
+			CompoundNBT compoundnbt = new CompoundNBT();
+
+			try (BufferedReader bufferedreader = Files.newReader(optionsFile, Charsets.UTF_8)) {
+				bufferedreader.lines().forEach((optionString) -> {
+					try {
+						Iterator<String> iterator = Splitter.on(':').limit(2).split(optionString).iterator();
+						compoundnbt.putString(iterator.next(), iterator.next());
+					} catch (Exception exception2) {
+
+					}
+
+				});
+			}
+			for (String s : compoundnbt.keySet()) {
+				String s1 = compoundnbt.getString(s);
+
+				try {
+					if (s.equals("tracers")) {
+						if (s1.equals("true"))
+							Tracers.instance.on();
+						else
+							Tracers.instance.off();
+					}
+					if (s.equals("boundingBoxes")) {
+						if (s1.equals("true"))
+							BoundingBoxes.instance.on();
+						else
+							BoundingBoxes.instance.off();
+					}
+					if (s.equals("namePlates")) {
+						if (s1.equals("true"))
+							NamePlates.instance.on();
+						else
+							NamePlates.instance.off();
+					}
+					if (s.equals("autoSprint")) {
+						if (s1.equals("true"))
+							AutoSprint.instance.on();
+						else
+							AutoSprint.instance.off();
+					}
+					if (s.equals("autoJump")) {
+						if (s1.equals("true"))
+							AutoJump.instance.on();
+						else
+							AutoJump.instance.off();
+					}
+					if (s.equals("fullbright")) {
+						if (s1.equals("true"))
+							Fullbright.instance.on();
+						else
+							Fullbright.instance.off();
+					}
+					if (s.equals("clicker")) {
+						if (s1.equals("true"))
+							Clicker.instance.on();
+						else
+							Clicker.instance.off();
+					}
+
+				} catch (Exception exception) {
+
+				}
+			}
+		} catch (Exception e) {
+			Kornr.sendMessage("Failed to load options");
+		}
+
 	}
 }

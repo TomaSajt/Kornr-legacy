@@ -7,7 +7,8 @@ public class ToggleableButton extends KornrButton {
 	private Toggleable toggleable;
 
 	public ToggleableButton(int gridX, int gridY, String title, Toggleable toggleable) {
-		super(gridX, gridY, title);
+		super(gridX, gridY, title, (button) -> {
+		});
 		this.toggleable = toggleable;
 		updateState();
 	}
@@ -17,8 +18,8 @@ public class ToggleableButton extends KornrButton {
 		toggleable.toggle();
 		updateState();
 	}
-	
-	private void updateState() {
+
+	public void updateState() {
 		if (toggleable.isOn()) {
 			this.setAlpha(1f);
 		} else {
