@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.keybindings;
+package com.tomasajt.kornr;
 
 import com.tomasajt.kornr.gui.KornrSettingsScreen;
 
@@ -8,12 +8,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
-public class KeyBindingHandler {
+public class ShowSettings {
 	private static Minecraft mc = Minecraft.getInstance();
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent event) {
-		if (Keybindings.keyBindingOpenKornrMenu.isPressed()) {
+		if (Kornr.keyBindingOpenKornrMenu.isPressed()) {
 			mc.displayGuiScreen(KornrSettingsScreen.instance);
 		}
 	}

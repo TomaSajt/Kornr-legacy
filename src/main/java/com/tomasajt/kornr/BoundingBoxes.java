@@ -1,10 +1,10 @@
-package com.tomasajt.kornr.rendering;
+package com.tomasajt.kornr;
 
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.util.IToggleable;
 import com.tomasajt.kornr.util.KornrHelper;
+import com.tomasajt.kornr.util.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,16 +21,16 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
-public class BoundingBoxes implements IToggleable {
+public class BoundingBoxes extends Toggleable {
 
+	public static final BoundingBoxes instance = new BoundingBoxes();
 	private static Minecraft mc = Minecraft.getInstance();
 	private static Tessellator tessellator = Tessellator.getInstance();
 	private static BufferBuilder buffer = tessellator.getBuffer();
-	public static boolean isOn = false;
 
 	@SubscribeEvent
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-		if (isOn) {
+		if (instance.isOn) {
 			float partialTicks = event.getPartialTicks();
 			PlayerEntity player = mc.player;
 			ClientWorld clientWorld = mc.world;
@@ -85,15 +85,5 @@ public class BoundingBoxes implements IToggleable {
 		buffer.pos(matrix4f, maxX, maxY, minZ).endVertex();
 		tessellator.draw();
 		matrixStack.pop();
-	}
-
-	@Override
-	public void on() {
-		isOn = true;
-	}
-
-	@Override
-	public void off() {
-		isOn = false;
 	}
 }

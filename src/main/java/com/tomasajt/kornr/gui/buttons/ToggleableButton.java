@@ -1,27 +1,28 @@
 package com.tomasajt.kornr.gui.buttons;
 
-import com.tomasajt.kornr.util.IToggleable;
+import com.tomasajt.kornr.util.Toggleable;
 
 public class ToggleableButton extends KornrButton {
 
-	private boolean isOn;
-	private IToggleable toggleable;
+	private Toggleable toggleable;
 
-	public ToggleableButton(int gridX, int gridY, String title, IToggleable toggleable) {
+	public ToggleableButton(int gridX, int gridY, String title, Toggleable toggleable) {
 		super(gridX, gridY, title);
 		this.toggleable = toggleable;
-		this.setAlpha(0.5f);
+		updateState();
 	}
 
 	@Override
 	public void onPress() {
-		isOn = !isOn;
-		if (isOn) {
+		toggleable.toggle();
+		updateState();
+	}
+	
+	private void updateState() {
+		if (toggleable.isOn()) {
 			this.setAlpha(1f);
-			toggleable.on();
 		} else {
 			this.setAlpha(0.5f);
-			toggleable.off();
 		}
 	}
 

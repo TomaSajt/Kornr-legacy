@@ -1,8 +1,8 @@
-package com.tomasajt.kornr.rendering;
+package com.tomasajt.kornr;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.util.IToggleable;
 import com.tomasajt.kornr.util.KornrHelper;
+import com.tomasajt.kornr.util.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -18,16 +18,15 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 @EventBusSubscriber
-public class Tracers implements IToggleable {
-
+public class Tracers extends Toggleable {
 	private static Minecraft mc = Minecraft.getInstance();
 	private static Tessellator tessellator = Tessellator.getInstance();
 	private static BufferBuilder buffer = tessellator.getBuffer();
-	public static boolean isOn = false;
+	public static final Tracers instance = new Tracers();
 
 	@SubscribeEvent
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-		if (isOn) {
+		if (instance.isOn) {
 			float partialTicks = event.getPartialTicks();
 			PlayerEntity player = mc.player;
 			ClientWorld clientWorld = mc.world;
@@ -61,15 +60,5 @@ public class Tracers implements IToggleable {
 				averageY, averageZ);
 		tessellator.draw();
 		matrixStack.pop();
-	}
-
-	@Override
-	public void on() {
-		isOn = true;
-	}
-
-	@Override
-	public void off() {
-		isOn = false;
 	}
 }

@@ -1,12 +1,17 @@
 package com.tomasajt.kornr.util;
 
+import java.awt.Color;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -14,6 +19,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -21,7 +27,9 @@ import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeHooks;
@@ -39,7 +47,7 @@ public class KornrHelper {
 	}
 
 	public static boolean shouldShowNamePlate(PlayerEntity player, Entity entity) {
-		return entity != player && entity instanceof PlayerEntity && !entity.isInvisibleToPlayer(mc.player);
+		return entity != player && entity instanceof LivingEntity && !entity.isInvisibleToPlayer(mc.player);
 	}
 
 	public static Vector3d getCamPos() {
@@ -221,5 +229,58 @@ public class KornrHelper {
 				x++;
 		}
 		return x + min;
+	}
+
+	public static void renderNamePlate(FontRenderer fontrenderer, ITextComponent text, MatrixStack matrixStack,
+			IRenderTypeBuffer.Impl impl) {
+		renderNamePlate(fontrenderer, text, matrixStack, impl, 0.0f);
+	}
+
+	public static void renderNamePlate(FontRenderer fontrenderer, ITextComponent text, MatrixStack matrixStack,
+			IRenderTypeBuffer.Impl impl, float backgroundOpacity) {
+		float offset = (float) (-fontrenderer.getStringPropertyWidth(text) / 2);
+		int j = (int) (mc.gameSettings.getTextBackgroundOpacity(backgroundOpacity) * 255.0F) << 24;
+		fontrenderer.func_243247_a(text, offset, (float) 0, -1, false, matrixStack.getLast().getMatrix(), impl, true, j,
+				15728880);
+	}
+
+	public static void drawTextCentered(FontRenderer fontRenderer, ITextComponent text, MatrixStack matrixStack,
+			float x, float y, int color) {
+		float offset = (float) (-fontRenderer.getStringPropertyWidth(text) / 2);
+		matrixStack.translate(offset, -4.5, 0);
+		fontRenderer.drawString(matrixStack, text.getString(), 0, 0, Color.red.getRGB());
+		matrixStack.translate(-offset, 4.5, 0);
+	}
+
+	public static void drawTextCenteredTwoSided(FontRenderer fontRenderer, ITextComponent text, MatrixStack matrixStack,
+			float x, float y, int color) {
+		drawTextCentered(fontRenderer, text, matrixStack, x, y, color);
+		matrixStack.rotate(new Quaternion(0, 180, 0, true));
+		drawTextCentered(fontRenderer, text, matrixStack, x, y, color);
+
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void drawTexture(MatrixStack matrixStack, float x, float y, float uOffset, float vOffset, float width,
+			float height, float blitOffset, ResourceLocation textureResource) {
+		float x1 = x;
+		float x2 = x + width;
+		float y1 = y;
+		float y2 = y + height;
+		float minU = uOffset;
+		float maxU = uOffset + width;
+		float minV = vOffset;
+		float maxV = vOffset + height;
+		Matrix4f matrix = matrixStack.getLast().getMatrix();
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferbuilder = tessellator.getBuffer();
+		mc.getTextureManager().bindTexture(textureResource);
+		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		bufferbuilder.pos(matrix, x1, y2, blitOffset).tex(minU / 256, maxV / 256).endVertex();
+		bufferbuilder.pos(matrix, x2, y2, blitOffset).tex(maxU / 256, maxV / 256).endVertex();
+		bufferbuilder.pos(matrix, x2, y1, blitOffset).tex(maxU / 256, minV / 256).endVertex();
+		bufferbuilder.pos(matrix, x1, y1, blitOffset).tex(minU / 256, minV / 256).endVertex();
+		tessellator.draw();
+		RenderSystem.enableAlphaTest();
 	}
 }

@@ -3,8 +3,9 @@ loaderVersion="[35,)"
 license="All rights reserved"
 [[mods]]
 modId="kornr"
-version="0.1"
+version="0.2"
 displayName="Kornr Mod"
+logoFile="kornr.png"
 authors="Made by TomaSajt"
 description='''
 This is a mod made just for fun
