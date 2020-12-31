@@ -1,5 +1,6 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.util;
 
+import com.tomasajt.kornr.Kornr;
 import com.tomasajt.kornr.gui.KornrSettingsScreen;
 
 import net.minecraft.client.Minecraft;

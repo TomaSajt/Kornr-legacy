@@ -1,4 +1,4 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.toggleables;
 
 import com.tomasajt.kornr.util.KornrHelper;
 import com.tomasajt.kornr.util.Toggleable;
@@ -27,7 +27,7 @@ public class Clicker extends Toggleable {
 	@SubscribeEvent
 	public static void onClientTickEvent(ClientTickEvent event) {
 		if (event.phase == Phase.END) {
-			if (instance.isOn && mc.player != null && mc.currentScreen == null && mc.gameSettings.keyBindAttack.isKeyDown()) {
+			if (instance.isOn() && mc.player != null && mc.currentScreen == null && mc.gameSettings.keyBindAttack.isKeyDown()) {
 				if (tickCounterL >= currentTPCL) {
 					KornrHelper.leftClick();
 					tickCounterL = 0;
@@ -38,7 +38,7 @@ public class Clicker extends Toggleable {
 				currentTPCL = KornrHelper.getBinomial(minTPCL, maxTPCL, 0.1f);
 				tickCounterL = 0;
 			}
-			if (instance.isOn && mc.player != null && mc.currentScreen == null && mc.gameSettings.keyBindUseItem.isKeyDown()) {
+			if (instance.isOn() && mc.player != null && mc.currentScreen == null && mc.gameSettings.keyBindUseItem.isKeyDown()) {
 				if (tickCounterR >= currentTPCR) {
 					KornrHelper.rightClick();
 					tickCounterR = 0;

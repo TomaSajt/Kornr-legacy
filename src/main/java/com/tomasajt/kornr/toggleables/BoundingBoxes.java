@@ -1,4 +1,4 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.toggleables;
 
 import org.lwjgl.opengl.GL11;
 
@@ -30,7 +30,7 @@ public class BoundingBoxes extends Toggleable {
 
 	@SubscribeEvent
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-		if (instance.isOn) {
+		if (instance.isOn()) {
 			float partialTicks = event.getPartialTicks();
 			PlayerEntity player = mc.player;
 			ClientWorld clientWorld = mc.world;
@@ -50,7 +50,7 @@ public class BoundingBoxes extends Toggleable {
 		matrixStack.push();
 		Vector3d camPos = KornrHelper.getCamPos();
 		matrixStack.translate(-camPos.x, -camPos.y, -camPos.z);
-		AxisAlignedBB aabb = KornrHelper.getBoundingBoxPartial(entity, partialTicks);
+		AxisAlignedBB aabb = KornrHelper.getPartialBoundingBox(entity, partialTicks);
 		Matrix4f matrix4f = matrixStack.getLast().getMatrix();
 		float minX = (float) aabb.minX;
 		float minY = (float) aabb.minY;

@@ -99,7 +99,7 @@ public class KornrHelper {
 		RenderSystem.disableBlend();
 	}
 
-	public static AxisAlignedBB getBoundingBoxPartial(Entity entity, float partialTicks) {
+	public static AxisAlignedBB getPartialBoundingBox(Entity entity, float partialTicks) {
 		return getBoundingBoxCentered(entity).offset(getPartialPosition(entity, partialTicks));
 	}
 
@@ -139,7 +139,6 @@ public class KornrHelper {
 					mc.player.swingArm(Hand.MAIN_HAND);
 			}
 		}
-
 	}
 
 	public static void rightClick() {
@@ -283,4 +282,12 @@ public class KornrHelper {
 		tessellator.draw();
 		RenderSystem.enableAlphaTest();
 	}
+
+	public static double distanceToBoundingBox(AxisAlignedBB aabb, Vector3d pos) {
+		double dx = Math.max(Math.max(aabb.minX - pos.x, pos.x - aabb.maxX), 0);
+		double dy = Math.max(Math.max(aabb.minY - pos.y, pos.y - aabb.maxY), 0);
+		double dz = Math.max(Math.max(aabb.minZ - pos.z, pos.z - aabb.maxZ), 0);
+		return Math.sqrt(dx * dx + dy * dy + dz * dz);
+	}
+
 }

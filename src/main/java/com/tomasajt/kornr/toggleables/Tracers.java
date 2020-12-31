@@ -1,4 +1,4 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.toggleables;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tomasajt.kornr.util.KornrHelper;
@@ -26,7 +26,7 @@ public class Tracers extends Toggleable {
 
 	@SubscribeEvent
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-		if (instance.isOn) {
+		if (instance.isOn()) {
 			float partialTicks = event.getPartialTicks();
 			PlayerEntity player = mc.player;
 			ClientWorld clientWorld = mc.world;
@@ -49,7 +49,7 @@ public class Tracers extends Toggleable {
 				: player.getEyePosition(partialTicks);
 		Vector3d camPos = KornrHelper.getCamPos();
 
-		AxisAlignedBB aabb = KornrHelper.getBoundingBoxPartial(entity, partialTicks);
+		AxisAlignedBB aabb = KornrHelper.getPartialBoundingBox(entity, partialTicks);
 		double averageX = (aabb.minX + aabb.maxX) / 2;
 		double averageY = (aabb.minY + aabb.maxY) / 2;
 		double averageZ = (aabb.minZ + aabb.maxZ) / 2;

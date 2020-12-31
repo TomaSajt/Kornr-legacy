@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.keybindings;
+package com.tomasajt.kornr.util;
 
 import java.util.HashSet;
 import java.util.Set;

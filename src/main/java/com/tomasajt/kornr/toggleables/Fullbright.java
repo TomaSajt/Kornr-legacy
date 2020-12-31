@@ -1,4 +1,4 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.toggleables;
 
 import com.tomasajt.kornr.util.Toggleable;
 

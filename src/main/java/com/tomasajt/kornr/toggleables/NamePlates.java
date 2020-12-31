@@ -1,4 +1,4 @@
-package com.tomasajt.kornr;
+package com.tomasajt.kornr.toggleables;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tomasajt.kornr.util.KornrHelper;
@@ -32,7 +32,7 @@ public class NamePlates extends Toggleable {
 
 	@SubscribeEvent
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
-		if (instance.isOn) {
+		if (instance.isOn()) {
 			float partialTicks = event.getPartialTicks();
 			ClientWorld clientWorld = mc.world;
 			MatrixStack matrixStack = event.getMatrixStack();
@@ -50,7 +50,7 @@ public class NamePlates extends Toggleable {
 
 	@SubscribeEvent
 	public static void onNamePlate(RenderNameplateEvent event) {
-		if (instance.isOn) {
+		if (instance.isOn()) {
 			Entity entity = event.getEntity();
 			if (KornrHelper.shouldShowNamePlate(mc.player, entity)) {
 				event.setResult(Result.DENY);

@@ -1,7 +1,7 @@
 package com.tomasajt.kornr.util;
 
 public class Toggleable {
-	protected boolean isOn = false;
+	private boolean isOn = false;
 
 	public void on() {
 		isOn = true;
