@@ -16,7 +16,8 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.io.Files;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.Kornr;
+import com.tomasajt.kornr.KornrHelper;
+import com.tomasajt.kornr.KornrKeybindings;
 import com.tomasajt.kornr.gui.buttons.KornrButton;
 import com.tomasajt.kornr.gui.buttons.ToggleableKornrButton;
 import com.tomasajt.kornr.toggleables.AutoCrit;
@@ -25,9 +26,9 @@ import com.tomasajt.kornr.toggleables.AutoSprint;
 import com.tomasajt.kornr.toggleables.BoundingBoxes;
 import com.tomasajt.kornr.toggleables.Clicker;
 import com.tomasajt.kornr.toggleables.Fullbright;
+import com.tomasajt.kornr.toggleables.Hotbars;
 import com.tomasajt.kornr.toggleables.NamePlates;
 import com.tomasajt.kornr.toggleables.Tracers;
-import com.tomasajt.kornr.util.KornrHelper;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -62,6 +63,7 @@ public class KornrSettingsScreen extends Screen {
 		buttons.add(new ToggleableKornrButton(2, 0, "Clicker", Clicker.instance));
 		buttons.add(new ToggleableKornrButton(2, 1, "AutoCrit", AutoCrit.instance,
 				"Remember, critical hits only happen when you are not sprinting"));
+		buttons.add(new ToggleableKornrButton(2, 2, "Hotbars", Hotbars.instance));
 		int maxX = -1;
 		int maxY = -1;
 		for (KornrButton button : buttons) {
@@ -116,7 +118,7 @@ public class KornrSettingsScreen extends Screen {
 		if (super.keyPressed(keyCode, scanCode, modifiers)) {
 			return true;
 		}
-		if (Kornr.keyBindingOpenKornrSettings.isActiveAndMatches(mouseKey)) {
+		if (KornrKeybindings.keyBindingOpenSettings.isActiveAndMatches(mouseKey)) {
 			this.closeScreen();
 		}
 		return true;
@@ -151,11 +153,12 @@ public class KornrSettingsScreen extends Screen {
 				printwriter.println("fullbright:" + Fullbright.instance.isOn());
 				printwriter.println("clicker:" + Clicker.instance.isOn());
 				printwriter.println("autoCrit:" + AutoCrit.instance.isOn());
+				printwriter.println("hotbars:" + Hotbars.instance.isOn());
 			} catch (Exception exception) {
-				Kornr.sendMessage("Something went wrong with saving");
+				KornrHelper.sendMessage("Something went wrong with saving");
 			}
 		} catch (IOException e) {
-			Kornr.sendMessage("Something went wrong with creating the file");
+			KornrHelper.sendMessage("Something went wrong with creating the file");
 		}
 
 	}
@@ -180,59 +183,66 @@ public class KornrSettingsScreen extends Screen {
 			}
 			for (String s : compoundnbt.keySet()) {
 				String s1 = compoundnbt.getString(s);
-
-				if (s.equals("tracers")) {
+				switch (s) {
+				case "tracers":
 					if (s1.equals("true"))
 						Tracers.instance.on();
 					else
 						Tracers.instance.off();
-				}
-				if (s.equals("boundingBoxes")) {
+					break;
+				case "boundingBoxes":
 					if (s1.equals("true"))
 						BoundingBoxes.instance.on();
 					else
 						BoundingBoxes.instance.off();
-				}
-				if (s.equals("namePlates")) {
+					break;
+				case "namePlates":
 					if (s1.equals("true"))
 						NamePlates.instance.on();
 					else
 						NamePlates.instance.off();
-				}
-				if (s.equals("autoSprint")) {
+					break;
+				case "autoSprint":
 					if (s1.equals("true"))
 						AutoSprint.instance.on();
 					else
 						AutoSprint.instance.off();
-				}
-				if (s.equals("autoJump")) {
+					break;
+				case "autoJump":
 					if (s1.equals("true"))
 						AutoJump.instance.on();
 					else
 						AutoJump.instance.off();
-				}
-				if (s.equals("fullbright")) {
+					break;
+				case "fullbright":
 					if (s1.equals("true"))
 						Fullbright.instance.on();
 					else
 						Fullbright.instance.off();
-				}
-				if (s.equals("clicker")) {
+					break;
+				case "clicker":
 					if (s1.equals("true"))
 						Clicker.instance.on();
 					else
 						Clicker.instance.off();
-				}
-				if (s.equals("autoCrit")) {
+					break;
+				case "autoCrit":
 					if (s1.equals("true"))
 						AutoCrit.instance.on();
 					else
 						AutoCrit.instance.off();
+					break;
+				case "hotbars":
+					if (s1.equals("true"))
+						Hotbars.instance.on();
+					else
+						Hotbars.instance.off();
+					break;
 				}
 
 			}
 		} catch (Exception e) {
-			Kornr.sendMessage("Failed to load options");
+			KornrHelper.sendMessage("Failed to load options");
 		}
 
 	}

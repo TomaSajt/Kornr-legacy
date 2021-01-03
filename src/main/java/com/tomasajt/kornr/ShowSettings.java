@@ -1,6 +1,5 @@
-package com.tomasajt.kornr.util;
+package com.tomasajt.kornr;
 
-import com.tomasajt.kornr.Kornr;
 import com.tomasajt.kornr.gui.KornrSettingsScreen;
 
 import net.minecraft.client.Minecraft;
@@ -14,7 +13,7 @@ public class ShowSettings {
 
 	@SubscribeEvent
 	public static void onClientTick(ClientTickEvent event) {
-		if (Kornr.keyBindingOpenKornrSettings.isPressed()) {
+		if (KornrKeybindings.keyBindingOpenSettings.isPressed()) {
 			mc.displayGuiScreen(KornrSettingsScreen.instance);
 		}
 	}

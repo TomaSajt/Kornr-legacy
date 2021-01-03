@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.util;
+package com.tomasajt.kornr;
 
 public class Toggleable {
 	private boolean isOn = false;

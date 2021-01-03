@@ -3,8 +3,8 @@ package com.tomasajt.kornr.toggleables;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.util.KornrHelper;
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.KornrHelper;
+import com.tomasajt.kornr.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -32,13 +31,12 @@ public class BoundingBoxes extends Toggleable {
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
 		if (instance.isOn()) {
 			float partialTicks = event.getPartialTicks();
-			PlayerEntity player = mc.player;
 			ClientWorld clientWorld = mc.world;
 			MatrixStack matrixStack = event.getMatrixStack();
 
 			KornrHelper.enableLinesThroughWallColored(1.0f, 0.0f, 1.0f, 0.9f, 1f);
 			for (Entity entity : clientWorld.getAllEntities()) {
-				if (KornrHelper.shouldDrawTracers(player, entity)) {
+				if (KornrHelper.shouldDrawTracers(entity)) {
 					drawBoundingBox(matrixStack, entity, partialTicks);
 				}
 			}

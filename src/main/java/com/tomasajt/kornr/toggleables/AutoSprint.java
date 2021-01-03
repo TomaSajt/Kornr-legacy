@@ -1,6 +1,6 @@
 package com.tomasajt.kornr.toggleables;
 
-import com.tomasajt.kornr.util.KeyBindingToggler;
+import com.tomasajt.kornr.KeyBindingToggler;
 
 import net.minecraft.client.Minecraft;
 

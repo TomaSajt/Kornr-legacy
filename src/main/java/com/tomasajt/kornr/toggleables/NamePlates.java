@@ -1,8 +1,8 @@
 package com.tomasajt.kornr.toggleables;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.util.KornrHelper;
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.KornrHelper;
+import com.tomasajt.kornr.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -36,15 +36,14 @@ public class NamePlates extends Toggleable {
 			float partialTicks = event.getPartialTicks();
 			ClientWorld clientWorld = mc.world;
 			MatrixStack matrixStack = event.getMatrixStack();
-			PlayerEntity player = mc.player;
 			EntityRendererManager renderManager = mc.getRenderManager();
-			KornrHelper.enableTextThroughWall();
+			KornrHelper.enableThroughWall();
 			for (Entity entity : clientWorld.getAllEntities()) {
-				if (KornrHelper.shouldShowNamePlate(player, entity)) {
+				if (KornrHelper.shouldShowNamePlate(entity)) {
 					drawNamePlate(matrixStack, entity, partialTicks, renderManager);
 				}
 			}
-			KornrHelper.disableTextThroughWall();
+			KornrHelper.disableThroughWall();
 		}
 	}
 
@@ -52,7 +51,7 @@ public class NamePlates extends Toggleable {
 	public static void onNamePlate(RenderNameplateEvent event) {
 		if (instance.isOn()) {
 			Entity entity = event.getEntity();
-			if (KornrHelper.shouldShowNamePlate(mc.player, entity)) {
+			if (KornrHelper.shouldShowNamePlate(entity)) {
 				event.setResult(Result.DENY);
 			}
 		}

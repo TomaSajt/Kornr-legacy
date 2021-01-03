@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.util;
+package com.tomasajt.kornr;
 
 import java.awt.Color;
 
@@ -14,12 +14,10 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -30,6 +28,7 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.ForgeHooks;
@@ -38,16 +37,21 @@ public class KornrHelper {
 
 	private static Minecraft mc = Minecraft.getInstance();
 
-	public static boolean shouldDrawTracers(PlayerEntity player, Entity entity) {
-		return entity != player && entity instanceof LivingEntity && !entity.isInvisibleToPlayer(mc.player);
+	public static void sendMessage(Object message) {
+		Minecraft mc = Minecraft.getInstance();
+		mc.ingameGUI.getChatGUI().printChatMessage(new StringTextComponent(message.toString()));
 	}
 
-	public static boolean shouldDrawBoundingBox(PlayerEntity player, Entity entity) {
-		return entity != player && entity instanceof LivingEntity && !entity.isInvisibleToPlayer(mc.player);
+	public static boolean shouldDrawTracers(Entity entity) {
+		return entity != mc.player && entity instanceof PlayerEntity && !entity.isSpectator();
 	}
 
-	public static boolean shouldShowNamePlate(PlayerEntity player, Entity entity) {
-		return entity != player && entity instanceof LivingEntity && !entity.isInvisibleToPlayer(mc.player);
+	public static boolean shouldDrawBoundingBox(Entity entity) {
+		return entity != mc.player && entity instanceof PlayerEntity && !entity.isSpectator();
+	}
+
+	public static boolean shouldShowNamePlate(Entity entity) {
+		return entity != mc.player && entity instanceof PlayerEntity && !entity.isSpectator();
 	}
 
 	public static Vector3d getCamPos() {
@@ -55,19 +59,17 @@ public class KornrHelper {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void enableTextThroughWall() {
+	public static void enableThroughWall() {
 		RenderSystem.disableLighting();
 		RenderSystem.depthMask(false);
 		RenderSystem.disableDepthTest();
-		RenderSystem.disableTexture();
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void disableTextThroughWall() {
+	public static void disableThroughWall() {
 		RenderSystem.enableLighting();
 		RenderSystem.depthMask(true);
 		RenderSystem.enableDepthTest();
-		RenderSystem.enableTexture();
 	}
 
 	public static void drawLine(MatrixStack matrixStack, BufferBuilder buffer, double x1, double y1, double z1,
@@ -260,8 +262,8 @@ public class KornrHelper {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void drawTexture(MatrixStack matrixStack, float x, float y, float uOffset, float vOffset, float width,
-			float height, float blitOffset, ResourceLocation textureResource) {
+	public static void blit(MatrixStack matrixStack, float x, float y, float blitOffset, float uOffset, float vOffset, float width,
+			float height) {
 		float x1 = x;
 		float x2 = x + width;
 		float y1 = y;
@@ -273,7 +275,6 @@ public class KornrHelper {
 		Matrix4f matrix = matrixStack.getLast().getMatrix();
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
-		mc.getTextureManager().bindTexture(textureResource);
 		bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 		bufferbuilder.pos(matrix, x1, y2, blitOffset).tex(minU / 256, maxV / 256).endVertex();
 		bufferbuilder.pos(matrix, x2, y2, blitOffset).tex(maxU / 256, maxV / 256).endVertex();

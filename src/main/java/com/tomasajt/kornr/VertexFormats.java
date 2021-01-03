@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.util;
+package com.tomasajt.kornr;
 
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;

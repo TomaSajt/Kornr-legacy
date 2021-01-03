@@ -1,14 +1,13 @@
 package com.tomasajt.kornr.toggleables;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tomasajt.kornr.util.KornrHelper;
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.KornrHelper;
+import com.tomasajt.kornr.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -28,14 +27,12 @@ public class Tracers extends Toggleable {
 	public static void onRenderWorldLastEvent(RenderWorldLastEvent event) {
 		if (instance.isOn()) {
 			float partialTicks = event.getPartialTicks();
-			PlayerEntity player = mc.player;
-			ClientWorld clientWorld = mc.world;
 			MatrixStack matrixStack = event.getMatrixStack();
 
-			for (Entity entity : clientWorld.getAllEntities()) {
-				if (KornrHelper.shouldDrawTracers(player, entity)) {
+			for (Entity entity : mc.world.getAllEntities()) {
+				if (KornrHelper.shouldDrawTracers(entity)) {
 					KornrHelper.enableLinesThroughWallColored(1.0f, 1.0f, 1.0f, 0.3f, 3f);
-					drawTracers(matrixStack, player, entity, partialTicks);
+					drawTracers(matrixStack, mc.player, entity, partialTicks);
 				}
 			}
 			KornrHelper.disableLinesThroughWall();

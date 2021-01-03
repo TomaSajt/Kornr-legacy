@@ -1,7 +1,7 @@
 package com.tomasajt.kornr.toggleables;
 
-import com.tomasajt.kornr.util.KornrHelper;
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.KornrHelper;
+import com.tomasajt.kornr.Toggleable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;

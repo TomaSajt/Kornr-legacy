@@ -1,6 +1,6 @@
 package com.tomasajt.kornr.gui.buttons;
 
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.Toggleable;
 
 public class ToggleableKornrButton extends KornrButton {
 

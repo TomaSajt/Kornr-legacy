@@ -1,4 +1,4 @@
-package com.tomasajt.kornr.util;
+package com.tomasajt.kornr;
 
 public class GLModes {
 	public static final int POINTS = 0;

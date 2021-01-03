@@ -1,6 +1,6 @@
 package com.tomasajt.kornr.toggleables;
 
-import com.tomasajt.kornr.util.Toggleable;
+import com.tomasajt.kornr.Toggleable;
 
 import net.minecraft.client.Minecraft;
 
