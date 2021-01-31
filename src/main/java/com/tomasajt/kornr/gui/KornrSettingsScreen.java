@@ -140,6 +140,7 @@ public class KornrSettingsScreen extends Screen {
 	}
 
 	public void saveSettings() {
+		
 		try {
 			kornrDir.mkdir();
 			optionsFile.createNewFile();
@@ -244,6 +245,5 @@ public class KornrSettingsScreen extends Screen {
 		} catch (Exception e) {
 			KornrHelper.sendMessage("Failed to load options");
 		}
-
 	}
 }

@@ -41,10 +41,10 @@ public class Tracers extends Toggleable {
 	}
 
 	public static void drawTracers(MatrixStack matrixStack, PlayerEntity player, Entity entity, float partialTicks) {
-		Vector3d selfPosShifted = mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON
-				? player.getEyePosition(partialTicks).add(player.getLookVec().scale(3))
-				: player.getEyePosition(partialTicks);
 		Vector3d camPos = KornrHelper.getCamPos();
+		Vector3d selfPosShifted = mc.gameSettings.getPointOfView() == PointOfView.FIRST_PERSON
+				? camPos.add(player.getLookVec().scale(3))
+				: player.getEyePosition(partialTicks);
 
 		AxisAlignedBB aabb = KornrHelper.getPartialBoundingBox(entity, partialTicks);
 		double averageX = (aabb.minX + aabb.maxX) / 2;
